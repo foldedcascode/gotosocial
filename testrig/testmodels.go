@@ -2410,6 +2410,14 @@ func NewTestFaves() map[string]*gtsmodel.StatusFave {
 			StatusID:        "01F8MHAMCHF6Y650WCRSCP4WMY", // local account status 1
 			URI:             "http://localhost:8080/users/admin/liked/01F8Q0486ANTDWKG02A7DS1Q24",
 		},
+		"remote_account_1_local_account_1_status_1": {
+			ID:              "01F8Q0486ACGGWKG02A7DS1Q28",
+			CreatedAt:       TimeMustParse("2024-05-14T13:21:09+02:00"),
+			AccountID:       "01F8MH5ZK5VRH73AKHQM6Y9VNX", // remote account 1
+			TargetAccountID: "01F8MH1H7YV1Z7D2C8K2730QBF", // local account 1
+			StatusID:        "01F8MHAMCHF6Y650WCRSCP4WMY", // local account status 1
+			URI:             "http://fossbros-anonymous.io/users/foss_satan/liked/01F8Q0486ACGGWKG02A7DS1Q28",
+		},
 	}
 }
 
