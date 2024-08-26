@@ -139,6 +139,7 @@ func (f *federatingDB) undoLike(
 	undo vocab.ActivityStreamsUndo,
 	t vocab.Type,
 ) error {
+	fmt.Println("hello")
 	Like, ok := t.(vocab.ActivityStreamsLike)
 	if !ok {
 		return errors.New("undoLike: couldn't parse vocab.Type into vocab.ActivityStreamsLike")
@@ -150,11 +151,13 @@ func (f *federatingDB) undoLike(
 		return nil
 	}
 
+	fmt.Println("hello2")
 	fave, err := f.converter.ASLikeToFave(ctx, Like)
 	if err != nil {
 		return fmt.Errorf("undoLike: error converting ActivityStreams Like to fave: %w", err)
 	}
 
+	fmt.Println("hello3")
 	// Ensure addressee is fave target.
 	if fave.TargetAccountID != receivingAccount.ID {
 		// Ignore this Activity.

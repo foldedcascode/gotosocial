@@ -4366,3 +4366,21 @@ func newAPDelete(deleteTarget *url.URL, deleteActor *url.URL, deletePublished ti
 
 	return delete
 }
+
+func NewAPLike(likeTarget *url.URL, likeActor *url.URL, likeTo *url.URL) vocab.ActivityStreamsLike {
+	like := streams.NewActivityStreamsLike()
+
+	to := streams.NewActivityStreamsToProperty()
+	to.AppendIRI(likeTo)
+	like.SetActivityStreamsTo(to)
+
+	actor := streams.NewActivityStreamsActorProperty()
+	actor.AppendIRI(likeActor)
+	like.SetActivityStreamsActor(actor)
+
+	objectProp := streams.NewActivityStreamsObjectProperty()
+	objectProp.AppendIRI(likeTarget)
+	like.SetActivityStreamsObject(objectProp)
+
+	return like
+}

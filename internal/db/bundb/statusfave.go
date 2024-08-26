@@ -280,6 +280,7 @@ func (s *statusFaveDB) UpdateStatusFave(ctx context.Context, fave *gtsmodel.Stat
 
 func (s *statusFaveDB) DeleteStatusFaveByID(ctx context.Context, id string) error {
 	var statusID string
+	fmt.Println("hi")
 
 	// Perform DELETE on status fave,
 	// returning the status ID it was for.
@@ -293,8 +294,11 @@ func (s *statusFaveDB) DeleteStatusFaveByID(ctx context.Context, id string) erro
 			// to us doing a RETURNING.
 			err = nil
 		}
+		fmt.Println("hi2")
 		return err
 	}
+	fmt.Print(statusID)
+	fmt.Println("hi3")
 
 	if statusID != "" {
 		// Invalidate any cached status faves for this status.
