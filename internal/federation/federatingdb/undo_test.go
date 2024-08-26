@@ -106,27 +106,13 @@ func (suite *UndoTestSuite) TestUndoLike() {
 
 func (suite *UndoTestSuite) TestUndoUnknownLike() {
 
-	// local_account_1 sent a follow request to remote_account_2;
-	// remote_account_2 rejects the follow request
 	favingAccount := suite.testAccounts["remote_account_1"]
-	//favingAccount := suite.testAccounts["remote_account_2"]
 	favedAccount := suite.testAccounts["local_account_1"]
 	ctx := createTestContext(favingAccount, favedAccount)
 
 	undo := streams.NewActivityStreamsUndo()
 
-	// favedAccountURI := testrig.URLMustParse(favedAccount.URI)
 	favingAccountURI := testrig.URLMustParse(favingAccount.URI)
-
-	//map[string]*gtsmodel.StatusFave{
-	//                "local_account_1_admin_account_status_1": {
-	//                        ID:              "01F8MHD2QCZSZ6WQS2ATVPEYJ9",
-	//                        CreatedAt:       TimeMustParse("2022-05-14T13:21:09+02:00"),
-	//                        AccountID:       "01F8MH1H7YV1Z7D2C8K2730QBF", // local account 1
-	//                        TargetAccountID: "01F8MH17FWEB39HZJ76B6VXSKF", // admin account
-	//                        StatusID:        "01F8MH75CBF9JFX4ZAD54N0W0R", // admin account status 1
-	//                        URI:             "http://localhost:8080/users/the_mighty_zork/liked/01F8MHD2QCZSZ6WQS2ATVPEYJ9",
-	//                },
 
 	acceptActorProp := streams.NewActivityStreamsActorProperty()
 	acceptActorProp.AppendIRI(favingAccountURI)
@@ -134,53 +120,31 @@ func (suite *UndoTestSuite) TestUndoUnknownLike() {
 
 	op := streams.NewActivityStreamsObjectProperty()
 
-	//op.AppendIRI(testrig.URLMustParse("http://localhost:8080/aaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
-	//op2 := streams.NewActivityStreamsObjectProperty()
-	//op2.AppendIRI(testrig.URLMustParse("http://localhost:8080/aaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
-	//asl := streams.NewActivityStreamsLike()
-	//asl.SetActivityStreamsObject(op2)
-
-	//apLike := testrig.NewAPLike(
-	//	testrig.URLMustParse("http://fossbros-anonymous.io/users/foss_satan/liked/01F8Q0486ACGGWKG02A7DS1Q28"),
-	//	//	testrig.URLMustParse("http://fossbros-anonymous.io/users/foss_satan/liked/NOTAREALID"),
-	//	testrig.URLMustParse("http://fossbros-anonymous.io/users/foss_satan"),
-	//	testrig.URLMustParse("http://localhost:8080/users/the_mighty_zork"),
-	//)
-	//op.AppendActivityStreamsLike(apLike)
-
-	// todo we should actually test to ignore remote like-undos i think
-	// todo how about remote undo of a like of a deleted local status? no, still same-case
-
-	favToUndo := testrig.NewTestFaves()["remote_account_1_local_account_1_status_1"]
-	//favToUndo.ID = "NOTAREALID"
-	//favToUndo.StatusID = "N0TAR34L1D"
-	//favToUndo.AccountID = "NOTAREALID"
-	//favToUndo.URI = "http://localhost:8080/aaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-	asFav, asErr := suite.tc.FaveToAS(ctx, favToUndo)
-	suite.NoError(asErr)
-	//fmt.Printf("%+v\n", asFav)
-	//asFav.SetActivityStreamsLikes
-	// a
-	//asFav.ID = "N0TAR34L1D"
-	//asFav.SetID("N0TAR34L1D")
-	//asFav.URI = "http://localhost:8080/aaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-	//asFav.SetURI("http://localhost:8080/aaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-	//asFav.
-	op.AppendActivityStreamsLike(asFav)
-
-	//op.AppendActivityStreamsLike(asl)
-
-	//delErr := suite.db.DeleteStatusFaveByID(ctx, favToUndo.StatusID)
-	//suite.NoError(delErr)
-	//delErr = suite.db.DeleteStatusFaveByID(ctx, favToUndo.StatusID)
-	//suite.NoError(delErr)
+	apLike2 := streams.NewActivityStreamsLike()
+	actorProp2 := streams.NewActivityStreamsActorProperty()
+	actorProp2.AppendIRI(testrig.URLMustParse("http://fossbros-anonymous.io/users/foss_satan"))
+	apLike2.SetActivityStreamsActor(actorProp2)
+	idProp := streams.NewJSONLDIdProperty()
+	idProp.Set(
+		testrig.URLMustParse("http://fossbros-anonymous.io/users/foss_satan/liked/01F8Q0486ACGGWKG02A7DS1Q28"),
+	)
+	apLike2.SetJSONLDId(idProp)
+	objectProp2 := streams.NewActivityStreamsObjectProperty()
+	objectProp2.AppendIRI(
+		testrig.URLMustParse("http://localhost:8080/users/the_mighty_zork/statuses/NOTAREALID"),
+	)
+	apLike2.SetActivityStreamsObject(objectProp2)
+	toProp2 := streams.NewActivityStreamsToProperty()
+	toProp2.AppendIRI(
+		testrig.URLMustParse("http://localhost:8080/users/the_mighty_zork"),
+	)
+	apLike2.SetActivityStreamsTo(toProp2)
+	op.AppendActivityStreamsLike(apLike2)
 
 	undo.SetActivityStreamsObject(op)
 
 	err := suite.federatingDB.Undo(ctx, undo)
 	suite.NoError(err)
-	//err = suite.federatingDB.Undo(ctx, undo)
-	//suite.NoError(err)
 }
 
 func TestUndoTestSuite(t *testing.T) {
