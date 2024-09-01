@@ -299,7 +299,6 @@ func (suite *InboxPostTestSuite) TestPostUnblock() {
 		suite.FailNow(err.Error())
 	}
 
-	// TODO should i also test like this?
 	undo := suite.newUndo(asBlock, func() vocab.ActivityStreamsObjectProperty {
 		// Append the whole block as Object.
 		op := streams.NewActivityStreamsObjectProperty()
@@ -467,7 +466,7 @@ func (suite *InboxPostTestSuite) TestPostUnlike() {
 		requestingAccount,
 		targetAccount,
 		http.StatusInternalServerError,
-		`{"status":"Internal Server Error"}`,
+		`{"error":"Internal Server Error"}`,
 		suite.signatureCheck,
 	)
 
