@@ -35,6 +35,8 @@ import (
 func (f *federatingDB) Undo(ctx context.Context, undo vocab.ActivityStreamsUndo) error {
 	l := log.WithContext(ctx)
 
+	fmt.Println("made it to Undo")
+
 	if log.Level() >= level.DEBUG {
 		i, err := marshalItem(undo)
 		if err != nil {
@@ -140,6 +142,9 @@ func (f *federatingDB) undoLike(
 	t vocab.Type,
 ) error {
 	fmt.Println("hello")
+	fmt.Println("undoLike ")
+	fmt.Print(undo)
+	fmt.Println(" undoLike2")
 	Like, ok := t.(vocab.ActivityStreamsLike)
 	if !ok {
 		return errors.New("undoLike: couldn't parse vocab.Type into vocab.ActivityStreamsLike")
@@ -155,6 +160,9 @@ func (f *federatingDB) undoLike(
 	fave, err := f.converter.ASLikeToFave(ctx, Like)
 	fmt.Print(err)
 	// TODO check IsNotFound here? or maybe even higher up? but idk if fmt preserves the flag...
+	if gtserror.IsNotFound(err) {
+		fmt.Println("hi hello hi")
+	}
 	if err != nil {
 		return fmt.Errorf("undoLike: error converting ActivityStreams Like to fave: %w", err)
 	}
