@@ -465,8 +465,8 @@ func (suite *InboxPostTestSuite) TestPostUnlike() {
 		undo,
 		requestingAccount,
 		targetAccount,
-		http.StatusInternalServerError,
-		`{"error":"Internal Server Error"}`,
+		http.StatusNotFound,
+		`{"error":"Not Found"}`,
 		suite.signatureCheck,
 	)
 
