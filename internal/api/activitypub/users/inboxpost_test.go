@@ -299,6 +299,7 @@ func (suite *InboxPostTestSuite) TestPostUnblock() {
 		suite.FailNow(err.Error())
 	}
 
+	// TODO should i also test like this?
 	undo := suite.newUndo(asBlock, func() vocab.ActivityStreamsObjectProperty {
 		// Append the whole block as Object.
 		op := streams.NewActivityStreamsObjectProperty()
@@ -534,6 +535,7 @@ func (suite *InboxPostTestSuite) TestPostCreateMalformedBlock() {
 		`{"error":"Bad Request: malformed incoming activity"}`,
 		suite.signatureCheck,
 	)
+	// TODO more tests like this one
 }
 
 func (suite *InboxPostTestSuite) TestPostFromBlockedAccount() {

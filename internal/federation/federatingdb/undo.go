@@ -153,6 +153,8 @@ func (f *federatingDB) undoLike(
 
 	fmt.Println("hello2")
 	fave, err := f.converter.ASLikeToFave(ctx, Like)
+	fmt.Print(err)
+	// TODO check IsNotFound here? or maybe even higher up? but idk if fmt preserves the flag...
 	if err != nil {
 		return fmt.Errorf("undoLike: error converting ActivityStreams Like to fave: %w", err)
 	}
