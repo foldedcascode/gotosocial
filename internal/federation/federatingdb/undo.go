@@ -71,6 +71,9 @@ func (f *federatingDB) Undo(ctx context.Context, undo vocab.ActivityStreamsUndo)
 		case ap.ActivityLike:
 			if err := f.undoLike(ctx, receivingAcct, requestingAcct, undo, objType); err != nil {
 				errs.Appendf("error undoing like: %w", err)
+				fmt.Println("we have an error from Undo")
+				// apiutil.NotFoundHandler(ctx, nil, false, err)
+				// return gtserror.SetNotFound(gtserror.NewErrorNotFound(err))
 			}
 		case ap.ActivityAnnounce:
 			// TODO: actually handle this !

@@ -18,6 +18,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -41,6 +42,7 @@ func respondBlocked(c *gin.Context) {
 // error JSON response, sets the given error on the gin context
 // for later logging, finally aborting the gin handler chain.
 func respondInternalServerError(c *gin.Context, err error) {
+	fmt.Println("respondInternalServerError")
 	apiutil.Data(c,
 		http.StatusInternalServerError,
 		apiutil.AppJSON,
