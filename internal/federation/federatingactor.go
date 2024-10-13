@@ -64,6 +64,7 @@ func newFederatingActor(c pub.CommonBehavior, s2s pub.FederatingProtocol, db pub
 //   - Return code 202 instead of 200 on successful POST, to reflect
 //     that we process most side effects asynchronously.
 func (f *federatingActor) PostInboxScheme(ctx context.Context, w http.ResponseWriter, r *http.Request, scheme string) (bool, error) {
+	// TODO something in here?
 	l := log.WithContext(ctx).
 		WithFields([]kv.Field{
 			{"userAgent", r.UserAgent()},
@@ -185,7 +186,17 @@ func (f *federatingActor) PostInboxScheme(ctx context.Context, w http.ResponseWr
 			return false, gtserror.NewErrorBadRequest(errors.New(text), text)
 		}
 
+		if errorsv2.AsV2[gtserror.WithCode](err) != nil {
+			// If it was already wrapped with an
+			// HTTP code then don't bother rewrapping
+			// it, just return it as-is for caller to
+			// handle.
+			fmt.Println("we got a code")
+			return false, err
+		}
+
 		// There's been some real error.
+		// TODO
 		err := gtserror.Newf("error calling sideEffectActor.PostInbox: %w", err)
 		return false, gtserror.NewErrorInternalError(err)
 	}

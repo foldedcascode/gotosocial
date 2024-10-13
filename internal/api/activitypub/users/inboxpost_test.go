@@ -325,6 +325,153 @@ func (suite *InboxPostTestSuite) TestPostUnblock() {
 	}
 }
 
+// func (suite *InboxPostTestSuite) TestPostUnlike() {
+// 	var (
+// 		ctx               = context.Background()
+// 		requestingAccount = suite.testAccounts["remote_account_1"]
+// 		targetAccount     = suite.testAccounts["local_account_1"]
+// 		// favID             = "http://fossbros-anonymous.io/liked/01H1462TPRTVG2RTQCTSQ7N6Q0"
+// 		favURI = "http://fossbros-anonymous.io/users/foss_satan/liked/01F8Q0486ACGGWKG02A7DS1Q28"
+// 		favID  = "01F8Q0486ACGGWKG02A7DS1Q28"
+// 		undoID = "http://fossbros-anonymous.io/some-activity/01H1463RDS8G5H98F29BXYHW6C"
+// 		// statusID          = "http://localhost:8080/users/whomever/statuses/NOTAREALSTATUS"
+// 		//statusID = "http://localhost:8080/users/the_mighty_zork/statuses/01F8MHAMCHF6Y650WCRSCP4WMY"
+// 		statusID = "01F8MHAMCHF6Y650WCRSCP4WMY"
+// 	)
+//
+// 	fave := &gtsmodel.StatusFave{
+// 		ID:              id.NewULID(),
+// 		URI:             favURI,
+// 		AccountID:       requestingAccount.ID,
+// 		TargetAccountID: targetAccount.ID,
+// 		StatusID:        statusID,
+// 	}
+//
+// 	// Create the undo from the AS model fave.
+// 	asFave, err := suite.tc.FaveToAS(ctx, fave)
+// 	if err != nil {
+// 		suite.FailNow(err.Error())
+// 	}
+//
+// 	if err := suite.db.DeleteStatusFaveByID(ctx, favID); err != nil {
+// 		suite.FailNow(err.Error())
+// 	}
+//
+// 	_, err = suite.tc.FaveToAS(ctx, fave)
+// 	if err != nil {
+// 		suite.FailNow(err.Error())
+// 	}
+//
+// 	//if !testrig.WaitFor(func() bool {
+// 	//	_, err := suite.db.GetStatusFaveByID(ctx, block.ID)
+// 	//	return errors.Is(err, db.ErrNoEntries)
+// 	//}) {
+// 	//	suite.FailNow("timed out waiting for block to be removed")
+// 	//}
+//
+// 	// TODO should i also test like this?
+// 	undo := suite.newUndo(asFave, func() vocab.ActivityStreamsObjectProperty {
+// 		// Append the whole block as Object.
+// 		op := streams.NewActivityStreamsObjectProperty()
+// 		op.AppendActivityStreamsLike(asFave)
+// 		return op
+// 	}, targetAccount.URI, undoID)
+//
+// 	// Undo.
+// 	suite.inboxPost(
+// 		undo,
+// 		requestingAccount,
+// 		targetAccount,
+// 		http.StatusInternalServerError,
+// 		`{"status":"Internal Server Error"}`,
+// 		suite.signatureCheck,
+// 	)
+//
+// }
+
+func (suite *InboxPostTestSuite) TestPostUnlike() {
+	var (
+		//		ctx               = context.Background()
+		requestingAccount = suite.testAccounts["remote_account_1"]
+		targetAccount     = suite.testAccounts["local_account_1"]
+		// favID             = "http://fossbros-anonymous.io/liked/01H1462TPRTVG2RTQCTSQ7N6Q0"
+		//		favURI = "http://fossbros-anonymous.io/users/foss_satan/liked/01F8Q0486ACGGWKG02A7DS1Q28"
+		//		favID  = "01F8Q0486ACGGWKG02A7DS1Q28"
+		undoID = "http://fossbros-anonymous.io/some-activity/01H1463RDS8G5H98F29BXYHW6C"
+		// statusID          = "http://localhost:8080/users/whomever/statuses/NOTAREALSTATUS"
+		//statusID = "http://localhost:8080/users/the_mighty_zork/statuses/01F8MHAMCHF6Y650WCRSCP4WMY"
+		//		statusID = "01F8MHAMCHF6Y650WCRSCP4WMY"
+	)
+
+	//	fave := &gtsmodel.StatusFave{
+	//		ID:              id.NewULID(),
+	//		URI:             favURI,
+	//		AccountID:       requestingAccount.ID,
+	//		TargetAccountID: targetAccount.ID,
+	//		StatusID:        statusID,
+	//	}
+
+	// harder to get something other than a 202 than i expected, here
+
+	//
+	//undo := streams.NewActivityStreamsUndo()
+
+	//
+	//favingAccountURI := testrig.URLMustParse(requestingAccount.URI)
+
+	//
+	//acceptActorProp := streams.NewActivityStreamsActorProperty()
+	//acceptActorProp.AppendIRI(favingAccountURI)
+	//undo.SetActivityStreamsActor(acceptActorProp)
+
+	op := streams.NewActivityStreamsObjectProperty()
+
+	apLike2 := streams.NewActivityStreamsLike()
+	actorProp2 := streams.NewActivityStreamsActorProperty()
+	actorProp2.AppendIRI(testrig.URLMustParse("http://fossbros-anonymous.io/users/foss_satan"))
+	apLike2.SetActivityStreamsActor(actorProp2)
+	idProp := streams.NewJSONLDIdProperty()
+	idProp.Set(
+		//testrig.URLMustParse("http://fossbros-anonymous.io/users/foss_satan/liked/01F8Q0486ACGGWKG02A7DS1Q28"),
+		testrig.URLMustParse("http://fossbros-anonymous.io/users/foss_satan/liked/01F8Q0486ACGGWKG02A7DS1Q42"),
+	)
+	apLike2.SetJSONLDId(idProp)
+	objectProp2 := streams.NewActivityStreamsObjectProperty()
+	objectProp2.AppendIRI(
+		testrig.URLMustParse("http://localhost:8080/users/the_mighty_zork/statuses/NOTAREALID"),
+		//testrig.URLMustParse("NOTAREALID"),
+	)
+	apLike2.SetActivityStreamsObject(objectProp2)
+	toProp2 := streams.NewActivityStreamsToProperty()
+	toProp2.AppendIRI(
+		testrig.URLMustParse("http://localhost:8080/users/the_mighty_zork"),
+	)
+	apLike2.SetActivityStreamsTo(toProp2)
+	op.AppendActivityStreamsLike(apLike2)
+
+	//
+	//undo.SetActivityStreamsObject(op)
+
+	// TODO should i also test like this?
+	undo := suite.newUndo(apLike2, func() vocab.ActivityStreamsObjectProperty {
+		// Append the whole block as Object.
+		op := streams.NewActivityStreamsObjectProperty()
+		op.AppendActivityStreamsLike(apLike2)
+		return op
+	}, targetAccount.URI, undoID)
+
+	// Undo.
+	suite.inboxPost(
+		undo,
+		requestingAccount,
+		targetAccount,
+		http.StatusNotFound,
+		`{"error":"Not Found"}`,
+		suite.signatureCheck,
+	)
+
+}
+
 func (suite *InboxPostTestSuite) TestPostUpdate() {
 	var (
 		requestingAccount  = new(gtsmodel.Account)
@@ -534,6 +681,7 @@ func (suite *InboxPostTestSuite) TestPostCreateMalformedBlock() {
 		`{"error":"Bad Request: malformed incoming activity"}`,
 		suite.signatureCheck,
 	)
+	// TODO more tests like this one
 }
 
 func (suite *InboxPostTestSuite) TestPostFromBlockedAccount() {
