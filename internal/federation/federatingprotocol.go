@@ -20,7 +20,6 @@ package federation
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -469,7 +468,6 @@ func (f *Federator) FederatingCallbacks(ctx context.Context) (
 	// Override some default behaviors to trigger our own side effects.
 	other = []any{
 		func(ctx context.Context, undo vocab.ActivityStreamsUndo) error {
-			fmt.Println("in the undo callback")
 			return f.FederatingDB().Undo(ctx, undo)
 		},
 		func(ctx context.Context, accept vocab.ActivityStreamsAccept) error {

@@ -50,7 +50,6 @@ func Logger(logClientIP bool) gin.HandlerFunc {
 			if r := recover(); r != nil {
 				if c.Writer.Status() == 0 {
 					// No response was written, send a generic Internal Error
-					fmt.Println("logger handler no response")
 					c.Writer.WriteHeader(http.StatusInternalServerError)
 				}
 

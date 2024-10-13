@@ -1137,7 +1137,6 @@ func (c *Converter) AttachmentToAS(ctx context.Context, a *gtsmodel.MediaAttachm
 // }
 func (c *Converter) FaveToAS(ctx context.Context, f *gtsmodel.StatusFave) (vocab.ActivityStreamsLike, error) {
 	// check if targetStatus is already pinned to this fave, and fetch it if not
-	fmt.Println("aaaa1")
 	if f.Status == nil {
 		s, err := c.state.DB.GetStatusByID(ctx, f.StatusID)
 		if err != nil {
@@ -1145,7 +1144,6 @@ func (c *Converter) FaveToAS(ctx context.Context, f *gtsmodel.StatusFave) (vocab
 		}
 		f.Status = s
 	}
-	fmt.Println("aaaa2")
 
 	// check if the targetAccount is already pinned to this fave, and fetch it if not
 	if f.TargetAccount == nil {
@@ -1155,7 +1153,6 @@ func (c *Converter) FaveToAS(ctx context.Context, f *gtsmodel.StatusFave) (vocab
 		}
 		f.TargetAccount = a
 	}
-	fmt.Println("aaaa3")
 
 	// check if the faving account is already pinned to this fave, and fetch it if not
 	if f.Account == nil {

@@ -18,7 +18,6 @@
 package users
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -32,22 +31,17 @@ import (
 // InboxPOSTHandler deals with incoming POST requests to an actor's inbox.
 // Eg., POST to https://example.org/users/whatever/inbox.
 func (m *Module) InboxPOSTHandler(c *gin.Context) {
-	fmt.Println("inboxposthandler 1")
 	_, err := m.processor.Fedi().InboxPost(c.Request.Context(), c.Writer, c.Request)
-	fmt.Println("inboxposthandler 2")
 	if err != nil {
 		errWithCode := errorsv2.AsV2[gtserror.WithCode](err)
 
-		fmt.Println("inboxposthandler 3")
 		if errWithCode == nil {
-			fmt.Println("inboxposthandler 4")
 			// Something else went wrong, and someone forgot to return
 			// an errWithCode! It's chill though. Log the error but don't
 			// return it as-is to the caller, to avoid leaking internals.
 			log.Errorf(c.Request.Context(), "returning Bad Request to caller, err was: %q", err)
 			errWithCode = gtserror.NewErrorBadRequest(err)
 		}
-		fmt.Println("inboxposthandler 5")
 
 		// Pass along confirmed error with code to the main error handler
 		apiutil.ErrorHandler(c, errWithCode, m.processor.InstanceGetV1)

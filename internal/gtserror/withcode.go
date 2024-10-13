@@ -19,9 +19,7 @@ package gtserror
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
-	"runtime/debug"
 	"strings"
 )
 
@@ -130,8 +128,6 @@ func NewErrorNotFound(original error, helpText ...string) WithCode {
 
 // NewErrorInternalError returns an ErrorWithCode 500 with the given original error and optional help text.
 func NewErrorInternalError(original error, helpText ...string) WithCode {
-	fmt.Println("new error internal error")
-	debug.PrintStack()
 	safe := http.StatusText(http.StatusInternalServerError)
 	if helpText != nil {
 		safe = safe + ": " + strings.Join(helpText, ": ")
